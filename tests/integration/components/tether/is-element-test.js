@@ -1,5 +1,7 @@
-import Ember from 'ember';
-import { moduleForComponent, test } from 'ember-qunit';
+import $ from 'jquery';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { findTooltip, findTooltipTarget } from 'dummy/tests/helpers/ember-tooltips';
 import {
@@ -8,8 +10,6 @@ import {
   isElementElsewhere,
 } from 'ember-tooltips/components/tether-popover-on-element';
 
-const { $ } = Ember;
-
 let $elsewhere;
 let $parentElsewhere;
 let $popover;
@@ -17,11 +17,11 @@ let $popoverInterior;
 let $target;
 let $targetInterior;
 
-moduleForComponent('tether-popover-on-element', 'Integration | Utility | isElement', {
-  integration: true,
+module('Integration | Utility | isElement', function(hooks) {
+  setupRenderingTest(hooks);
 
-  beforeEach() {
-    this.render(hbs`
+  hooks.beforeEach(async function() {
+    await render(hbs`
       <div class="parent-elsewhere">
         <div class="target">
           <div class="target-interior"></div>
@@ -39,60 +39,60 @@ moduleForComponent('tether-popover-on-element', 'Integration | Utility | isEleme
     $popoverInterior = $('.popover-interior');
     $elsewhere = $('.elsewhere');
     $parentElsewhere = $('.parent-elsewhere');
-  },
-});
+  });
 
-test('Popover: isElementInPopover', function(assert) {
+  test('Popover: isElementInPopover', function(assert) {
 
-  assert.expect(6);
+    assert.expect(6);
 
-  assert.notOk(isElementInPopover($target, $popover));
+    assert.notOk(isElementInPopover($target, $popover));
 
-  assert.notOk(isElementInPopover($targetInterior, $popover));
+    assert.notOk(isElementInPopover($targetInterior, $popover));
 
-  assert.ok(isElementInPopover($popover, $popover));
+    assert.ok(isElementInPopover($popover, $popover));
 
-  assert.ok(isElementInPopover($popoverInterior, $popover));
+    assert.ok(isElementInPopover($popoverInterior, $popover));
 
-  assert.notOk(isElementInPopover($elsewhere, $popover));
+    assert.notOk(isElementInPopover($elsewhere, $popover));
 
-  assert.notOk(isElementInPopover($parentElsewhere, $popover));
+    assert.notOk(isElementInPopover($parentElsewhere, $popover));
 
-});
+  });
 
-test('Popover: isElementInTargetAndNotInPopover', function(assert) {
+  test('Popover: isElementInTargetAndNotInPopover', function(assert) {
 
-  assert.expect(6);
+    assert.expect(6);
 
-  assert.ok(isElementInTargetAndNotInPopover($target, $target, $popover));
+    assert.ok(isElementInTargetAndNotInPopover($target, $target, $popover));
 
-  assert.ok(isElementInTargetAndNotInPopover($targetInterior, $target, $popover));
+    assert.ok(isElementInTargetAndNotInPopover($targetInterior, $target, $popover));
 
-  assert.notOk(isElementInTargetAndNotInPopover($popover, $target, $popover));
+    assert.notOk(isElementInTargetAndNotInPopover($popover, $target, $popover));
 
-  assert.notOk(isElementInTargetAndNotInPopover($popoverInterior, $target, $popover));
+    assert.notOk(isElementInTargetAndNotInPopover($popoverInterior, $target, $popover));
 
-  assert.notOk(isElementInTargetAndNotInPopover($elsewhere, $target, $popover));
+    assert.notOk(isElementInTargetAndNotInPopover($elsewhere, $target, $popover));
 
-  assert.notOk(isElementInTargetAndNotInPopover($parentElsewhere, $target, $popover));
+    assert.notOk(isElementInTargetAndNotInPopover($parentElsewhere, $target, $popover));
 
-});
+  });
 
-test('Popover: isElementElsewhere', function(assert) {
+  test('Popover: isElementElsewhere', function(assert) {
 
-  assert.expect(6);
+    assert.expect(6);
 
-  assert.notOk(isElementElsewhere($target, $target, $popover));
+    assert.notOk(isElementElsewhere($target, $target, $popover));
 
-  assert.notOk(isElementElsewhere($targetInterior, $target, $popover));
+    assert.notOk(isElementElsewhere($targetInterior, $target, $popover));
 
-  assert.notOk(isElementElsewhere($popover, $target, $popover));
+    assert.notOk(isElementElsewhere($popover, $target, $popover));
 
-  assert.notOk(isElementElsewhere($popoverInterior, $target, $popover));
+    assert.notOk(isElementElsewhere($popoverInterior, $target, $popover));
 
-  assert.ok(isElementElsewhere($elsewhere, $target, $popover));
+    assert.ok(isElementElsewhere($elsewhere, $target, $popover));
 
-  assert.ok(isElementElsewhere($parentElsewhere, $target, $popover));
+    assert.ok(isElementElsewhere($parentElsewhere, $target, $popover));
 
+  });
 });
 

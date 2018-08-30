@@ -1,9 +1,9 @@
-/* jshint node:true */
-var RSVP = require('rsvp');
-var publisher = require('publish');
+/* eslint-env node */
+const RSVP = require('rsvp');
+const publisher = require('publish');
 
-var start = RSVP.denodeify(publisher.start);
-var publish = RSVP.denodeify(publisher.publish);
+const start = RSVP.denodeify(publisher.start);
+const publish = RSVP.denodeify(publisher.publish);
 
 // For details on each option run `ember help release`
 module.exports = {

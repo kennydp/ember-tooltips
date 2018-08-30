@@ -1,34 +1,36 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import { findTooltip } from 'dummy/tests/helpers/ember-tooltips';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('popover-on-element', 'Integration | Component | popover on element', {
-  integration: true,
-});
+module('Integration | Component | popover on element', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('attachment and targetAttachment override test', function(assert) {
+  test('attachment and targetAttachment override test', async function(assert) {
 
-  assert.expect(4);
+    assert.expect(4);
 
-  this.render(hbs`{{popover-on-element targetAttachment='top right' attachment='top left' keepInWindow=false}}`);
+    await render(hbs`{{popover-on-element targetAttachment='top right' attachment='top left' keepInWindow=false}}`);
 
-  const $target = this.$();
-  const $popover = findTooltip();
+    const $target = this.$();
+    const $popover = findTooltip();
 
-  const classPrefix = 'ember-tooltip-or-popover';
-  const targetClassPrefix =  `${classPrefix}-target-attached`;
-  const popoverClassPrefix = `${classPrefix}-element-attached`;
+    const classPrefix = 'ember-tooltip-or-popover';
+    const targetClassPrefix =  `${classPrefix}-target-attached`;
+    const popoverClassPrefix = `${classPrefix}-element-attached`;
 
-  assert.ok($target.hasClass(`${targetClassPrefix}-top`),
-      'the $target should have the prefixed top position class');
+    assert.ok($target.hasClass(`${targetClassPrefix}-top`),
+        'the $target should have the prefixed top position class');
 
-  assert.ok($target.hasClass(`${targetClassPrefix}-right`),
-      'the $target should have the prefixed right position class');
+    assert.ok($target.hasClass(`${targetClassPrefix}-right`),
+        'the $target should have the prefixed right position class');
 
-  assert.ok($popover.hasClass(`${popoverClassPrefix}-top`),
-      'the $popover should have the prefixed top position class');
+    assert.ok($popover.hasClass(`${popoverClassPrefix}-top`),
+        'the $popover should have the prefixed top position class');
 
-  assert.ok($popover.hasClass(`${popoverClassPrefix}-left`),
-      'the $popover should have the prefixed left position class');
+    assert.ok($popover.hasClass(`${popoverClassPrefix}-left`),
+        'the $popover should have the prefixed left position class');
 
+  });
 });

@@ -1,55 +1,59 @@
-import Ember from 'ember';
-import { moduleForComponent, test } from 'ember-qunit';
+import RSVP from 'rsvp';
+import { run } from '@ember/runloop';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render, waitFor } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-
-const {
-  RSVP,
-  run,
-} = Ember;
 
 import { assertTooltipContent } from '../../helpers/ember-tooltips';
 
-moduleForComponent('tooltip-on-element', 'Integration | Option | updateFor', {
-  integration: true,
-});
+module('Integration | Option | updateFor', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('updateFor test', function(assert) {
-
-  assert.expect(2);
-
-  this.set('asyncContent', null);
-
-  this.on('setAsyncContent', () => {
-    return new RSVP.Promise((resolve) => {
-      run.later(() => {
-        this.set('asyncContent', 'Some model');
-        resolve();
-      }, 100);
-    });
+  hooks.beforeEach(function() {
+    this.actions = {};
+    this.send = (actionName, ...args) => this.actions[actionName].apply(this, args);
   });
 
-  this.render(hbs`
-    {{#tooltip-on-element updateFor=asyncContent onRender='setAsyncContent'}}
-      {{#if asyncContent}}
-        {{asyncContent}}
-      {{else}}
-        ...
-      {{/if}}
-    {{/tooltip-on-element}}
-  `);
+  test('updateFor test', async function(assert) {
 
-  const done = assert.async();
+    const done = assert.async();
+    assert.expect(2);
 
-  assertTooltipContent(assert, {
-    contentString: '...',
-  });
+    this.set('asyncContent', null);
 
-  run.later(() => {
+    this.actions.setAsyncContent = () => {
+      return new RSVP.Promise((resolve) => {
+        run.later(() => {
+          this.set('asyncContent', 'Some model');
+          resolve();
+        }, 100);
+      });
+    };
+
+    render(hbs`
+      {{#tooltip-on-element updateFor=asyncContent onRender='setAsyncContent'}}
+        {{#if asyncContent}}
+          {{asyncContent}}
+        {{else}}
+          ...
+        {{/if}}
+      {{/tooltip-on-element}}
+    `);
+
+    await waitFor('.ember-tooltip');
+
     assertTooltipContent(assert, {
-      contentString: 'Some model',
+      contentString: '...',
     });
 
-    done();
-  }, 200);
+    run.later(() => {
+      assertTooltipContent(assert, {
+        contentString: 'Some model',
+      });
 
+      done();
+    }, 200);
+
+  });
 });

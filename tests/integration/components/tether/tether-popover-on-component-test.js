@@ -1,51 +1,58 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { assertTooltipNotVisible, assertTooltipVisible, triggerTooltipTargetEvent, assertTooltipRendered } from '../../../helpers/ember-tooltips';
+import {
+  assertTooltipNotVisible,
+  assertTooltipVisible,
+  triggerTooltipTargetEvent,
+  assertTooltipRendered
+} from '../../../helpers/ember-tooltips';
 
-moduleForComponent('tether-popover-on-component', 'Integration | Component | tether popover on component', {
-  integration: true,
-});
+module('Integration | Component | tether popover on component', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('tether-popover-on-component renders', function(assert) {
+  test('tether-popover-on-component renders', async function(assert) {
 
-  assert.expect(1);
+    assert.expect(1);
 
-  this.render(hbs`
-    {{#some-component}}
-      {{#tether-popover-on-component}}
-        template block text
-      {{/tether-popover-on-component}}
-    {{/some-component}}
-  `);
+    await render(hbs`
+      {{#some-component}}
+        {{#tether-popover-on-component}}
+          template block text
+        {{/tether-popover-on-component}}
+      {{/some-component}}
+    `);
 
-  assertTooltipRendered(assert);
+    assertTooltipRendered(assert);
 
-});
+  });
 
-test("tether-popover-on-component targets it's parent view", function(assert) {
+  test("tether-popover-on-component targets it's parent view", async function(assert) {
 
-  assert.expect(4);
+    assert.expect(4);
 
-  this.render(hbs`
-    {{#some-component class="target-component"}}
-      {{#tether-popover-on-component event="click"}}
-        template block text
-      {{/tether-popover-on-component}}
-    {{/some-component}}
-  `);
+    await render(hbs`
+      {{#some-component class="target-component"}}
+        {{#tether-popover-on-component event="click"}}
+          template block text
+        {{/tether-popover-on-component}}
+      {{/some-component}}
+    `);
 
-  const $popoverTarget = this.$().find('.target-component');
+    const $popoverTarget = this.$().find('.target-component');
 
-  assertTooltipRendered(assert);
+    assertTooltipRendered(assert);
 
-  assert.ok($popoverTarget.hasClass('ember-tooltip-or-popover-target'));
+    assert.ok($popoverTarget.hasClass('ember-tooltip-or-popover-target'));
 
-  triggerTooltipTargetEvent(this.$(), 'click', { selector: '.target-component' });
+    triggerTooltipTargetEvent(this.$(), 'click', { selector: '.target-component' });
 
-  assertTooltipVisible(assert);
+    assertTooltipVisible(assert);
 
-  triggerTooltipTargetEvent(this.$(), 'click', { selector: '.target-component' });
+    triggerTooltipTargetEvent(this.$(), 'click', { selector: '.target-component' });
 
-  assertTooltipNotVisible(assert);
+    assertTooltipNotVisible(assert);
 
+  });
 });

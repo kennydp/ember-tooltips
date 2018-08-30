@@ -1,4 +1,6 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import {
   assertTooltipNotRendered,
@@ -6,40 +8,40 @@ import {
   assertTooltipContent,
 } from '../../../helpers/ember-tooltips';
 
-moduleForComponent('popover-on-component', 'Integration | Component | popover on component', {
-  integration: true,
-});
+module('Integration | Component | popover on component', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('popover-on-component does render when enableLazyRendering=false', function(assert) {
+  test('popover-on-component does render when enableLazyRendering=false', async function(assert) {
 
-  assert.expect(2);
+    assert.expect(2);
 
-  this.render(hbs`
-    {{#some-component}}
-      {{#popover-on-component enableLazyRendering=false}}
-        template block text
-      {{/popover-on-component}}
-    {{/some-component}}
-  `);
+    await render(hbs`
+      {{#some-component}}
+        {{#popover-on-component enableLazyRendering=false}}
+          template block text
+        {{/popover-on-component}}
+      {{/some-component}}
+    `);
 
-  assertTooltipContent(assert, {
-    contentString: 'template block text',
+    assertTooltipContent(assert, {
+      contentString: 'template block text',
+    });
+
+    assertTooltipRendered(assert);
   });
 
-  assertTooltipRendered(assert);
-});
+  test('popover-on-component does not eagerly render when enableLazyRendering=true', async function(assert) {
 
-test('popover-on-component does not eagerly render when enableLazyRendering=true', function(assert) {
+    assert.expect(1);
 
-  assert.expect(1);
+    await render(hbs`
+      {{#some-component}}
+        {{#popover-on-component enableLazyRendering=true}}
+          template block text
+        {{/popover-on-component}}
+      {{/some-component}}
+    `);
 
-  this.render(hbs`
-    {{#some-component}}
-      {{#popover-on-component enableLazyRendering=true}}
-        template block text
-      {{/popover-on-component}}
-    {{/some-component}}
-  `);
-
-  assertTooltipNotRendered(assert);
+    assertTooltipNotRendered(assert);
+  });
 });
